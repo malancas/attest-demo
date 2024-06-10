@@ -50,18 +50,16 @@ jobs:
         id: push
         uses: docker/build-push-action@v5.0.0
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
           IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
         with:
           context: .
           push: true
-          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          tags: ${{ secrets.ECR_REGISTRY }}/${{ secrets.REPO_NAME }}:${{ env.IMAGE_TAG }}
 
       - name: Attest artifact
         uses: actions/attest-build-provenance@49df96e17e918a15956db358890b08e61c704919 # v1.2.0
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-name: ${{ secrets.ECR_REGISTRY }}/${{ secrets.REPO_NAME }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   # verify-with-policy-tester:
