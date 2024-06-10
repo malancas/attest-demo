@@ -62,7 +62,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ github.sha }}
         with:
-          subject-name: ${{ secrets.EC2R_REGISTRY }}/${{ secrets.REPO_NAME }}
+          subject-name: ${{ secrets.ECR_REGISTRY }}/${{ secrets.REPO_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   # verify-with-policy-tester:
