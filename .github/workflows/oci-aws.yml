@@ -50,7 +50,8 @@ jobs:
         id: push
         uses: docker/build-push-action@v5.0.0
         env:
-          IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
+          IMAGE_TAG: ${{ github.sha }}
+          # IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
         with:
           context: .
           push: true
