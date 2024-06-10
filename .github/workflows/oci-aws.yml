@@ -59,8 +59,10 @@ jobs:
 
       - name: Attest artifact
         uses: actions/attest-build-provenance@49df96e17e918a15956db358890b08e61c704919 # v1.2.0
+        env:
+          IMAGE_TAG: ${{ github.sha }}
         with:
-          subject-name: ${{ secrets.ECR_REGISTRY }}/${{ secrets.REPO_NAME }}/${{ env.IMAGE_NAME }}
+          subject-name: ${{ secrets.ECR_REGISTRY }}/${{ secrets.REPO_NAME }}/${{ env.IMAGE_TAG }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   # verify-with-policy-tester:
