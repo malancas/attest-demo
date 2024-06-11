@@ -1,0 +1,86 @@
+# https:///artifactory/api/docker/attest-demo-docker
+name: Attest Image stored in JFrog
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildx:
+        description: 'Use docker buildx'
+        type: boolean
+        required: false
+        default: true
+      
+jobs:
+  build-and-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+    steps:
+      - name: Build artifact
+        run: date > artifact.bin
+
+      - name: Build Dockerfile
+        run: |
+          cat <<EOF > Dockerfile
+          FROM scratch
+          COPY artifact.bin .
+          EOF
+
+      - name: Set up QEMU
+        if: inputs.buildx
+        uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3.0.0
+
+      - name: Set up Docker Buildx
+        if: inputs.buildx
+        uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
+
+      # - name: Setup JFrog CLI
+      #   uses: jfrog/setup-jfrog-cli@v3
+      #   env:
+      #     JF_URL: ${{ secrets.JF_URL }}
+      #     JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+
+      # - name: Build Tag and push Docker Image
+      #   env:
+      #     IMAGE_NAME: malancas.jfrog.io/attest-demo-docker/jfrog-docker-example-image:${{ github.run_number }}
+      #   run: |
+      #     jf docker build -t $IMAGE_NAME .
+      #     jf docker push $IMAGE_NAME
+
+      - name: Auth w/ registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.JF_URL }}
+          username: ${{ secrets.JF_USER }}
+          password: ${{ secrets.JF_ACCESS_TOKEN }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v5.0.0
+        with:
+          context: .
+          push: true
+          tags: malancas.jfrog.io/attest-demo-docker/jfrog-docker-example-image:${{ github.run_number }}
+
+      - name: Attest artifact
+        uses: actions/attest-build-provenance@49df96e17e918a15956db358890b08e61c704919 # v1.2.0
+        with:
+          subject-name: malancas.jfrog.io/attest-demo-docker/jfrog-docker-example-image
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+          
+      # - name: Publish Build info With JFrog CLI
+      #   env:
+      #     # Generated and maintained by GitHub
+      #     JFROG_CLI_BUILD_NAME: jfrog-docker-build-example
+      #     # JFrog organization secret
+      #     JFROG_CLI_BUILD_NUMBER : ${{ github.run_number }}
+      #   run: |
+      #     # Export the build name and build nuber
+      #     # Collect environment variables for the build
+      #     jf rt build-collect-env
+      #     # Collect VCS details from git and add them to the build
+      #     jf rt build-add-git
+      #     # Publish build info
+      #     jf rt build-publish
