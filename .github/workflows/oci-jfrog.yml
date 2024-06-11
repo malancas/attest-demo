@@ -43,7 +43,7 @@ jobs:
 
       # - name: Build Tag and push Docker Image
       #   env:
-      #     IMAGE_NAME: malancas.jfrog.io/attest-demo-docker/jfrog-docker-example-image:${{ github.run_number }}
+      #     IMAGE_NAME: ${{ secrets.JF_URL }}/attest-demo-docker/jfrog-docker-example-image:${{ github.run_number }}
       #   run: |
       #     jf docker build -t $IMAGE_NAME .
       #     jf docker push $IMAGE_NAME
@@ -61,12 +61,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: malancas.jfrog.io/attest-demo-docker/jfrog-docker-example-image:${{ github.run_number }}
+          tags: ${{ secrets.JF_URL }}/attest-demo-docker/jfrog-docker-example-image:${{ github.run_number }}
 
       - name: Attest artifact
         uses: actions/attest-build-provenance@49df96e17e918a15956db358890b08e61c704919 # v1.2.0
         with:
-          subject-name: malancas.jfrog.io/attest-demo-docker/jfrog-docker-example-image
+          subject-name: ${{ secrets.JF_URL }}/attest-demo-docker/jfrog-docker-example-image
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
           
