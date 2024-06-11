@@ -52,7 +52,7 @@ jobs:
         with:
           registry: ${{ secrets.JF_URL }}
           username: ${{ secrets.JF_USER }}
-          password: ${{ secrets.JF_ACCESS_TOKEN }}
+          password: ${{ secrets.JF_ACCESS_TOKEN_OCI }}
 
       - name: Build and push Docker image
         id: push
