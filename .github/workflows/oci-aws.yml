@@ -58,7 +58,7 @@ jobs:
           tags: ${{ secrets.ECR_REGISTRY }}/${{ secrets.REPO_NAME }}:${{ env.IMAGE_TAG }}
 
       - name: Attest artifact
-        uses: actions/attest-build-provenance@49df96e17e918a15956db358890b08e61c704919 # v1.2.0
+        uses: actions/attest-build-provenance@3119152b59607c0d91a135e8d80c0d339f241a12 # v1.3.0
         env:
           IMAGE_TAG: ${{ github.sha }}
         with:
