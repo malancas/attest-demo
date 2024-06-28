@@ -18,7 +18,7 @@ jobs:
       attestations: write
     env:
       REGISTRY: us-west1-docker.pkg.dev
-      IMAGE_NAME: dehamer24/bdehamer/attest-demo
+      IMAGE_NAME: malancas/attest-demo
     steps:
       - name: Build artifact
         run: date > artifact.bin
