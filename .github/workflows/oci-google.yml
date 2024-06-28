@@ -41,9 +41,7 @@ jobs:
       - uses: 'google-github-actions/auth@v2'
         id: auth
         with:
-          workload_identity_provider: ${{ vars.GCLOUD_WIF_PROVIDER }}
-          service_account: ${{ vars.GCLOUD_SERVICE_ACCOUNT }}
-          token_format: access_token
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Auth w/ registry
         uses: docker/login-action@v3
@@ -61,7 +59,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0.0.1
 
       - name: Attest artifact
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v1.3.2
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
