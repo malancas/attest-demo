@@ -50,9 +50,11 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Attest artifact
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest@704a5f91febd9e5c0c99e835d73ba41b833f0b37
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
           push-to-registry: true
+          predicate-type: https://slsa.dev/provenance/v0.2
+          predicate: '{}'
 
