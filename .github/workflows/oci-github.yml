@@ -50,7 +50,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Attest artifact
-        uses: actions/attest@704a5f91febd9e5c0c99e835d73ba41b833f0b37
+        uses: actions/attest@e59cbc1ad1ac2d59339667419eb8cdde6eb61e3d
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
